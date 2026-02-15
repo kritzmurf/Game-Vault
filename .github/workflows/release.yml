@@ -1,0 +1,90 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  note_linting:
+    name: Note Linting (ripgrep TODOs)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ripgrep
+        run: sudo apt-get update && sudo apt-get install -y ripgrep
+      - name: Check for TODO comments
+        run: |
+          # Insert any other comment fields we may want here
+          if rg '//\s*(TODO|FIXME|HACK)' backend/ frontend/; then
+            echo "❌ Developer Notes Found. Clean up and reattempt. Aborting release."
+            exit 1
+          fi
+          echo "✅ Note Linting success"
+
+  backend:
+    needs: note_linting
+    name: Backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Run Backend CI
+        run: ./scripts/pipeline/ci-backend.sh
+  
+  frontend:
+    needs: note_linting
+    name: Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '25'
+
+      - name: Run Frontend CI
+        run: ./scripts/pipeline/ci-frontend.sh
+
+  release:
+    needs: [ note_linting, frontend, backend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PAT }}
+
+      - name: Read version file
+        id: get_tag
+        run: |
+          echo "tag=$(cat VERSION)" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          if git rev-parse "refs/tags/v${{ steps.get_tag.outputs.tag }}" >/dev/null 2>&1; then
+            echo "Tag v${{ steps.get_tag.outputs.tag }} already exists. Iterate tag version and reattempt"
+            exit 1
+          fi
+
+      # Tag ONLY once we know upload went smoothly
+      - name: Create tag and push
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PAT }}
+        run: |
+          TAG="${{ steps.get_tag.outputs.tag }}"
+          if [ -z "$TAG" ]; then
+            echo "No tag present. failing and exiting"
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git remote -v 
+          git tag "v${TAG}"
+          git push origin "v${TAG}"
