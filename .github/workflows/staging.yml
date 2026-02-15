@@ -1,0 +1,51 @@
+name: Staging
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  note_linting:
+    name: Note Linting (ripgrep TODOs)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ripgrep
+        run: sudo apt-get update && sudo apt-get install -y ripgrep
+      - name: Check for TODO comments
+        run: |
+          # Insert any other comment fields we may want here
+          if rg '//\s*(TODO|FIXME|HACK)' backend/ frontend/; then
+            echo "❌ Developer Notes Found. Clean up and reattempt. Aborting release."
+            exit 1
+          fi
+          echo "✅ Note Linting success"
+
+  backend:
+    needs: note_linting
+    name: Backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Run Backend CI
+        run: ./scripts/pipeline/ci-backend.sh
+  
+  frontend:
+    needs: note_linting
+    name: Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '25'
+
+      - name: Run Frontend CI
+        run: ./scripts/pipeline/ci-frontend.sh
