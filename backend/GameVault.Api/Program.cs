@@ -8,12 +8,13 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Development helper to read API (disabled in release)
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
+//This is intentionally not configured yet.
 app.UseAuthorization();
 
 app.MapControllers();

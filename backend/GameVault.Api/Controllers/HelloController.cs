@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace GameVault.Api.Controllers;
+namespace GameVault.Controllers;
 
+//hello world API controller
 [ApiController]
 [Route("api/[controller]")]
 public class HelloController : ControllerBase
