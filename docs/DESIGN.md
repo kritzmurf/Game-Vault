@@ -27,15 +27,15 @@ The frontend and backend are separate processes. In development, Vite proxies `/
 Game-Vault/
 ├── backend/GameVault.Api/
 │   ├── Controllers/          — API endpoint controllers
+│   ├── Data/                 — DbConnectionFactory, migration runner
+│   ├── Migrations/           — SQL migration files, embedded in compiled binary
 │   ├── Models/               — Entity and DTO classes (future)
 │   ├── Services/             — Business logic (future)
-│   ├── Data/                 — DbConnectionFactory, migration runner
 │   └── Program.cs            — Application entry point
 ├── frontend/game-vault/
 │   └── src/                  — React application source
 ├── scripts/
 │   ├── pipeline/             — CI/CD build scripts
-│   ├── migrations/           — Ordered SQL migration files
 │   └── data/                 — Seed data files (future)
 ├── docs/                     — Project documentation
 └── docker-compose.yml        — PostgreSQL + pgAdmin
