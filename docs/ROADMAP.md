@@ -13,12 +13,12 @@
 
 Connect the backend to PostgreSQL via Dapper and DbUp.
 
-- [ ] Add NuGet packages (`Npgsql`, `Dapper`, `DbUp-PostgreSQL`)
-- [ ] Create `DbConnectionFactory` class
-- [ ] Configure connection string in `appsettings.Development.json`
-- [ ] Wire up `DbConnectionFactory` in `Program.cs` via dependency injection
-- [ ] Write `001_initial.sql` and verify DbUp runs it on startup
-- [ ] Document database setup in README if needed
+- [x] Add NuGet packages (`Npgsql`, `Dapper`, `DbUp-PostgreSQL`)
+- [x] Create `DbConnectionFactory` class
+- [x] Configure connection string in `appsettings.Development.json`
+- [x] Wire up `DbConnectionFactory` in `Program.cs` via dependency injection
+- [x] Write `001_initial.sql` and verify DbUp runs it on startup
+- [x] Document database setup in README if needed
 
 ## Epic 2: Game Data & Seeding
 
