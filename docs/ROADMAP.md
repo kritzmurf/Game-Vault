@@ -11,21 +11,21 @@
 
 ## Epic 1: Database Foundation
 
-Connect the backend to PostgreSQL via Entity Framework Core.
+Connect the backend to PostgreSQL via Dapper and DbUp.
 
-- [ ] Add EF Core NuGet packages (`Npgsql.EntityFrameworkCore.PostgreSQL`)
-- [ ] Create `DbContext` class
-- [ ] Configure connection string in `appsettings.Development.json`
-- [ ] Wire up DbContext in `Program.cs` via dependency injection
-- [ ] Run initial EF migration to verify connectivity
-- [ ] Document database setup in README if needed
+- [x] Add NuGet packages (`Npgsql`, `Dapper`, `DbUp-PostgreSQL`)
+- [x] Create `DbConnectionFactory` class
+- [x] Configure connection string in `appsettings.Development.json`
+- [x] Wire up `DbConnectionFactory` in `Program.cs` via dependency injection
+- [x] Write `001_initial.sql` and verify DbUp runs it on startup
+- [x] Document database setup in README if needed
 
 ## Epic 2: Game Data & Seeding
 
 Define the game schema, build API endpoints, and populate with PS1 data.
 
 - [ ] Design `Game` model (title, platform, release date, region, description, cover art URL, etc.)
-- [ ] Create EF migration for the games table
+- [ ] Write SQL migration for the games table
 - [ ] Build `GamesController` with read endpoints (`GET /api/games`, `GET /api/games/{id}`)
 - [ ] Register a Twitch developer application (client type: Confidential)
 - [ ] Store Twitch Client ID and Client Secret securely (not in repo)
@@ -55,7 +55,7 @@ OAuth-based authentication. No local account management — users sign in via ex
 
 - [ ] Add ASP.NET Core authentication packages
 - [ ] Configure OAuth provider(s) with client ID/secret
-- [ ] Design `User` model (ID, display name, provider, provider ID, created date) and create migration
+- [ ] Design `User` model (ID, display name, provider, provider ID, created date) and write SQL migration
 - [ ] Implement OAuth callback and session/token handling on the backend
 - [ ] Build sign-in UI on the frontend
 - [ ] Protect relevant API routes (voting, etc.)
@@ -64,7 +64,7 @@ OAuth-based authentication. No local account management — users sign in via ex
 
 Allow authenticated users to vote on games.
 
-- [ ] Design `Vote` model (score: 0.0–10.0, one decimal granularity) and create migration
+- [ ] Design `Vote` model (score: 0.0–10.0, one decimal granularity) and write SQL migration
 - [ ] Build vote endpoints (`POST /api/games/{id}/vote`, `DELETE /api/games/{id}/vote`)
 - [ ] Enforce one-vote-per-user-per-game logic
 - [ ] Implement average score calculation for game display

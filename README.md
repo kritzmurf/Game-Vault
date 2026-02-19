@@ -12,40 +12,25 @@ The initial dataset focuses on PlayStation 1 titles released in North America, w
 
 ## Quick Start
 
-### 1. Environment setup
+1. Copy `.env.example` to `.env` and fill in your local passwords
+2. Start everything:
+   ```bash
+   ./scripts/dev-start.sh
+   ```
+3. Services will be available at:
+   - **Frontend:** http://localhost:5173
+   - **Backend API:** http://localhost:5000
+   - **pgAdmin:** http://localhost:5050
+
+Database migrations run automatically on backend startup.
+
+## Stopping
 
 ```bash
-cp .env.example .env
-# Edit .env with your preferred passwords
+# Ctrl+C stops the backend and frontend
+# Then tear down Docker containers:
+./scripts/dev-stop.sh
 ```
-
-### 2. Start the database
-
-```bash
-docker compose up -d
-```
-
-- **PostgreSQL** — `localhost:5432`
-- **pgAdmin** — `http://localhost:5050`
-
-### 3. Run the backend
-
-```bash
-dotnet run --project backend/GameVault.Api
-```
-
-- **API** — `http://localhost:5000`
-- **Test** — `curl http://localhost:5000/api/hello`
-
-### 4. Run the frontend
-
-```bash
-cd frontend/game-vault
-npm install
-npm run dev
-```
-
-- **App** — `http://localhost:5173`
 
 ## Project Structure
 
@@ -53,6 +38,12 @@ npm run dev
 Game-Vault/
 ├── backend/GameVault.Api/   # ASP.NET Core Web API
 ├── frontend/game-vault/     # React + TypeScript (Vite)
-├── scripts/                 # DB seed scripts (future)
+├── scripts/                 # Dev scripts and seed data
+├── docs/                    # Design and roadmap documentation
 └── docker-compose.yml       # PostgreSQL + pgAdmin
 ```
+
+## Documentation
+
+- [Design Document](docs/DESIGN.md) — architecture, data model, API design
+- [Roadmap](docs/ROADMAP.md) — epics and task tracking
