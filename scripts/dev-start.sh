@@ -6,6 +6,17 @@ PROJECT_ROOT=$(dirname "$(readlink -f "$0")")/..
 echo "=== Game Vault Dev Environment ==="
 echo ""
 
+# Load environment variables
+if [ -f "$PROJECT_ROOT/.env" ]; then
+    # set autoexport
+    set -a
+    source "$PROJECT_ROOT/.env"
+    set +a
+else
+    echo "WARNING: .env file not found. Copy .env.example and populate it."
+    exit 1
+fi
+
 # Start database
 echo "[1/3] Starting PostgreSQL and pgAdmin..."
 docker compose -f "$PROJECT_ROOT/docker-compose.yml" up -d --wait

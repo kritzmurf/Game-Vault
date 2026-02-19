@@ -13,6 +13,7 @@ Game Vault is a community-driven game database where users can browse games acro
 | Frontend | React + TypeScript (Vite) | Single-page application |
 | Backend | ASP.NET Core (.NET 10) | REST API |
 | Database | PostgreSQL 17 | Persistent storage |
+| Data Access | Npgsql + Dapper + DbUp | Postgres driver, query mapping, schema migrations |
 | Infrastructure | Docker Compose | Local dev environment |
 | CI/CD | GitHub Actions | CI, staging, release pipelines |
 
@@ -26,9 +27,10 @@ The frontend and backend are separate processes. In development, Vite proxies `/
 Game-Vault/
 ├── backend/GameVault.Api/
 │   ├── Controllers/          — API endpoint controllers
+│   ├── Data/                 — DbConnectionFactory, migration runner
+│   ├── Migrations/           — SQL migration files, embedded in compiled binary
 │   ├── Models/               — Entity and DTO classes (future)
 │   ├── Services/             — Business logic (future)
-│   ├── Data/                 — DbContext, migrations (future)
 │   └── Program.cs            — Application entry point
 ├── frontend/game-vault/
 │   └── src/                  — React application source
