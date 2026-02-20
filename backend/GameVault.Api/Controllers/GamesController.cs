@@ -11,6 +11,10 @@ namespace GameVault.Controllers;
 public class GamesController : ControllerBase
 {
     private readonly DbConnectionFactory _dbFactory;
+    private const int DefaultPage = 1;
+    private const int DefaultPageSize = 20;
+    private const int MinPageSize = 1;
+    private const int MaxPageSize = 100;
 
     public GamesController(DbConnectionFactory dbFactory)
     {
@@ -18,13 +22,30 @@ public class GamesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(int page = DefaultPage, int pageSize = DefaultPageSize)
     {
+        if (page < DefaultPage) page = DefaultPage;
+        if (pageSize <  MinPageSize|| pageSize > MaxPageSize) pageSize = DefaultPageSize;
+
+        var offset = (page -1) * pageSize;
+
         using var connection = _dbFactory.CreateConnection();
         var games = await connection.QueryAsync<Game>(
-                "SELECT * from games"
+                "SELECT * from games ORDER BY id LIMIT @PageSize OFFSET @Offset",
+                new { PageSize = pageSize, Offset = offset }
                 );
-        return Ok(games);
+
+        var totalCount = await connection.ExecuteScalarAsync<int>(
+            "SELECT COUNT(*) FROM games"
+            );
+
+        return Ok(new PaginatedResponse<Game>
+            {
+                Items = games,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            });
     }
 
     [HttpGet("{id}")]
