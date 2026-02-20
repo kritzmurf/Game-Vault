@@ -2,6 +2,10 @@ using GameVault.Api.Data;
 using System.Reflection;
 using DbUp;
 
+//C# styling and SQL styling dont play nice, and Dapper needs
+//to be massaged to handle the differences
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
 var builder = WebApplication.CreateBuilder(args);
 
 //Services
