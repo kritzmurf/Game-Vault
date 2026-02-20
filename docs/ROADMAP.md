@@ -24,15 +24,15 @@ Connect the backend to PostgreSQL via Dapper and DbUp.
 
 Define the game schema, build API endpoints, and populate with PS1 data.
 
-- [ ] Design `Game` model (title, platform, release date, region, description, cover art URL, etc.)
-- [ ] Write SQL migration for the games table
-- [ ] Build `GamesController` with read endpoints (`GET /api/games`, `GET /api/games/{id}`)
+- [x] Design `Game` model (title, platform, release date, region, description, cover art URL, etc.)
+- [x] Write SQL migration for the games table
+- [x] Build `GamesController` with read endpoints (`GET /api/games`, `GET /api/games/{id}`)
 - [ ] Register a Twitch developer application (client type: Confidential)
 - [ ] Store Twitch Client ID and Client Secret securely (not in repo)
 - [ ] Write IGDB data fetch script (authenticate, query PS1 games in batches, resolve covers/companies)
 - [ ] Export PS1 North America dataset to `scripts/data/ps1-games.json`
 - [ ] Write seed script to upsert JSON data into the database
-- [ ] Add pagination support to the game list endpoint
+- [x] Add pagination support to the game list endpoint
 
 ## Epic 3: Frontend — Browse & View
 
