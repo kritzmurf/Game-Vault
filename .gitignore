@@ -24,3 +24,8 @@ dist/
 # OS
 .DS_Store
 Thumbs.db
+
+# Python
+scripts/data/.venv/
+scripts/data/output/
+scripts/data/__pycache__/
