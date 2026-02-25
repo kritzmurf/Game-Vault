@@ -58,6 +58,10 @@ PLATFORMS = {
     IgdbPlatforms.PS1,
 }
 
+''' (For when we want to go 'full send')
+PLATFORMS = set(IgdbPlatforms)
+'''
+
 def authenticate(client_id, client_secret):
     """Get Oauth token from Twitch"""
     response = requests.post(TWITCH_AUTH_URL, params = {
