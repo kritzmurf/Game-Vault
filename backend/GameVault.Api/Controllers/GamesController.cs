@@ -22,7 +22,7 @@ public class GamesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll(int page = DefaultPage, int pageSize = DefaultPageSize)
+    public async Task<IActionResult> GetAll(int page = DefaultPage, int pageSize = DefaultPageSize, string? platform = null)
     {
         if (page < DefaultPage) page = DefaultPage;
         if (pageSize <  MinPageSize|| pageSize > MaxPageSize) pageSize = DefaultPageSize;
@@ -30,13 +30,16 @@ public class GamesController : ControllerBase
         var offset = (page -1) * pageSize;
 
         using var connection = _dbFactory.CreateConnection();
+    
+        var wherePlatform = platform != null ? "WHERE platform = @Platform" : "";
         var games = await connection.QueryAsync<Game>(
-                "SELECT * from games ORDER BY id LIMIT @PageSize OFFSET @Offset",
-                new { PageSize = pageSize, Offset = offset }
+                $"SELECT * from games {wherePlatform} ORDER BY title LIMIT @PageSize OFFSET @Offset",
+                new { PageSize = pageSize, Offset = offset, Platform = platform }
                 );
 
         var totalCount = await connection.ExecuteScalarAsync<int>(
-            "SELECT COUNT(*) FROM games"
+            $"SELECT COUNT(*) FROM games {wherePlatform}",
+            new { Platform = platform }
             );
 
         return Ok(new PaginatedResponse<Game>
@@ -59,5 +62,45 @@ public class GamesController : ControllerBase
         if (game is null) { return NotFound();}
 
         return Ok(game);
+    }
+
+    [HttpGet("platforms")]
+    public async Task<IActionResult> GetPlatforms()
+    {
+        using var connection = _dbFactory.CreateConnection();
+        var platforms = await connection.QueryAsync<dynamic>(
+            "SELECT platform, COUNT(*) as game_count FROM games GROUP BY platform ORDER BY platform"
+        );
+        return Ok(platforms);
+    }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> Search(string q = "", int page = DefaultPage, int pageSize = DefaultPageSize)
+    {
+        if (string.IsNullOrWhiteSpace(q))
+            return Ok(new PaginatedResponse<Game> { Items = [], TotalCount = 0, Page = page, PageSize = pageSize });
+        if (page < DefaultPage) page = DefaultPage;
+        if (pageSize < MinPageSize || pageSize > MaxPageSize) pageSize = DefaultPageSize;
+        
+        var offset = (page - 1) * pageSize;
+
+        using var connection = _dbFactory.CreateConnection();
+        var games = await connection.QueryAsync<Game>(
+            "SELECT * FROM games WHERE similarity(title, @Search) > 0.3 ORDER BY similarity(title, @Search) DESC LIMIT @PageSize OFFSET @Offset",
+            new { Search = q, PageSize = pageSize, Offset = offset }
+        );
+
+        var totalCount = await connection.ExecuteScalarAsync<int>(
+            "SELECT COUNT(*) FROM games WHERE similarity(title, @Search) > 0.3",
+            new { Search = q}
+        );
+
+        return Ok(new PaginatedResponse<Game>
+        {
+            Items = games,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        });
     }
 }
