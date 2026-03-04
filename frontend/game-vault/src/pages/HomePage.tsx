@@ -1,14 +1,27 @@
 import { useState, useEffect } from 'react'
 import { getPlatforms } from "../services/api"
 import PlatformCard from "../components/PlatformCard"
+import LoadingThrobber from "../components/LoadingThrobber"
+import ErrorMessage from "../components/ErrorMessage"
 import type { Platform } from "../types/game"
 
 function HomePage() {
     const [platforms, setPlatforms] = useState<Platform[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState("")
 
     useEffect(() => {
-        getPlatforms().then(setPlatforms)
+        setLoading(true)
+        setError("")
+        getPlatforms()
+            .then(setPlatforms)
+            .catch(() => setError("Failed to load platforms"))
+            .finally(() => setLoading(false))
     }, [])
+
+
+    if (loading) return <LoadingThrobber />
+    if (error) return <ErrorMessage message={error} onRetry={() => window.location.reload()} />
 
     return (
         <main className="max-w-6xl mx-auto px-6 py-8">
@@ -19,7 +32,6 @@ function HomePage() {
                 ))}
             </div>
         </main>
-
     )
 }
 

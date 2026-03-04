@@ -2,16 +2,28 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getGameById } from "../services/api"
 import type { Game } from "../types/game"
+import LoadingThrobber from "../components/LoadingThrobber"
+import ErrorMessage from "../components/ErrorMessage"
+import { formatPlatformName } from "../utils/formatPlatformName"
 
 function GamePage() {
     const { id } = useParams()
     const [game, setGame] = useState<Game | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState("")
 
     useEffect(() => {
         if (!id) return
-        getGameById(Number(id)).then(setGame)
+        setLoading(true)
+        setError("")
+        getGameById(Number(id))
+            .then(setGame)
+            .catch(() => setError("Failed to load game"))
+            .finally(() => setLoading(false))
     }, [id])
 
+    if (loading) return <LoadingThrobber />
+    if (error) return <ErrorMessage message={error} onRetry={() => window.location.reload()} />
     if (!game) return null
 
     return (
@@ -20,7 +32,7 @@ function GamePage() {
                 to={`/platform/${game.platform}`}
                 className="text-amber-500 hover:text-amber-400 text-sm"
             >
-                ← Back to {game.platform}
+                ← Back to {formatPlatformName(game.platform)}
             </Link>
             <div className="mt-6 flex gap-8">
                 {game.coverArtUrl && (
@@ -42,9 +54,11 @@ function GamePage() {
                         <div>   <dt className="text-gray-500 inline">Released:</dt>
                                 <dd className="inline">{game.releaseDate ?? "Unknown"}</dd> 
                         </div>
+                        {/*
                         <div>   <dt className="text-gray-500 inline">Region:</dt>
                                 <dd className="inline">{game.region ?? "Unknown"}</dd> 
                         </div>
+                        */}
                     </dl>
                 </div>
             </div>
