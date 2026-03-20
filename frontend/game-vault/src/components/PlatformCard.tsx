@@ -13,7 +13,7 @@ function PlatformCard( { name, gameCount }: PlatformCardProps) {
                         hover:ring-2 hover:ring-amber-500 hover:-translate-y-1
                         transition-all duration-200 cursor-pointer"
         >
-            <h2 className="text-lg font-semibold text-white">{formatPlatformName(name ?? "")}</h2>
+            <h2 className="text-lg font-semibold text-white truncate">{formatPlatformName(name ?? "")}</h2>
             <p className="text-sm text-gray-400 mt-2">{gameCount.toLocaleString()} games</p>
         </Link>
     )

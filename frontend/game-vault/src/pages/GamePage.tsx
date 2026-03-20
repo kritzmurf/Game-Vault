@@ -27,23 +27,23 @@ function GamePage() {
     if (!game) return null
 
     return (
-        <main className="max-w-4xl mx-auto px-6 py-8">
+        <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
             <Link
                 to={`/platform/${game.platform}`}
                 className="text-amber-500 hover:text-amber-400 text-sm"
             >
                 ← Back to {formatPlatformName(game.platform)}
             </Link>
-            <div className="mt-6 flex gap-8">
+            <div className="mt-6 flex flex-col sm:flex-row gap-8">
                 {game.coverArtUrl && (
                     <img
                         src={game.coverArtUrl}
                         alt={game.title}
-                        className="w-48 h-auto rounded-lg shrink-0"
+                        className="w-48 h-auto rounded-lg shrink-0 self-center sm:self-start"
                     />
                 )}
                 <div>
-                    <h1 className="text-3xl font-bold">{game.title}</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold">{game.title}</h1>
                     <dl className="mt-4 space-y-2 text-sm">
                         <div>   <dt className="text-gray-500 inline">Developer:</dt>
                                 <dd className="inline">{game.developer ?? "Unknown"}</dd> 

@@ -38,8 +38,8 @@ function PlatformPage() {
     if (error) return <ErrorMessage message={error} onRetry={() => window.location.reload()} />
 
     return (
-        <main className="max-w-4xl mx-auto px-6 py-8">
-            <h1 className="text-3xl font-bold mb-2">{formatPlatformName(name ?? "")}</h1>
+        <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">{formatPlatformName(name ?? "")}</h1>
             <p className="text-gray-400 mb-6">{totalCount.toLocaleString()} games</p>
             <div className="flex flex-col gap-3">
                 {games.map((game) => (

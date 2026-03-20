@@ -21,7 +21,7 @@ function NavBar() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleSearch}
-                className="bg-gray-800 text-white placeholder-gray-500 px-4 py-2 rounded-lg w-64 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="bg-gray-800 text-white placeholder-gray-500 px-4 py-2 rounded-lg w-40 sm:w-64 focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
         </nav>
     )
