@@ -11,14 +11,11 @@ function HomePage() {
     const [error, setError] = useState("")
 
     useEffect(() => {
-        setLoading(true)
-        setError("")
         getPlatforms()
             .then(setPlatforms)
             .catch(() => setError("Failed to load platforms"))
             .finally(() => setLoading(false))
     }, [])
-
 
     if (loading) return <LoadingThrobber />
     if (error) return <ErrorMessage message={error} onRetry={() => window.location.reload()} />

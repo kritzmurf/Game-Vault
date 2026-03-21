@@ -54,13 +54,15 @@ REQUEST_TIMEOUT = 30
 RATE_LIMIT_BUFFER = 0.25
 
 # Platforms we are currently fetching
+'''
 PLATFORMS = {
     IgdbPlatforms.PS1,
 }
+'''
 
 ''' (For when we want to go 'full send')
-PLATFORMS = set(IgdbPlatforms)
 '''
+PLATFORMS = set(IgdbPlatforms)
 
 def authenticate(client_id, client_secret):
     """Get Oauth token from Twitch"""
@@ -79,7 +81,7 @@ def fetch_games(headers, platform):
 
     while True:
         body = (
-            f"fields name, summary, first_release_date, cover, involved_companies;\n"
+            f"fields name, summary, first_release_date, cover, involved_companies, category, parent_game;\n"
             f"where platforms = ({platform.value});\n"
             f"limit {BATCH_SIZE};\n"
             f"offset {offset};\n"
@@ -242,6 +244,9 @@ def main():
                 "description": game.get("summary"),
                 "coverArtUrl": covers.get(game["id"]),
                 "region": "NA",
+                "category": game.get("category", 0),
+                "igdbId": game.get("id"),
+                "parentGameIgdbId": game.get("parent_game"),
                 })
 
         dataset.sort(key=lambda x: x["title"])

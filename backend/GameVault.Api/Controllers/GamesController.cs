@@ -31,15 +31,17 @@ public class GamesController : ControllerBase
 
         using var connection = _dbFactory.CreateConnection();
     
-        var wherePlatform = platform != null ? "WHERE platform = @Platform" : "";
+        var where = platform != null
+            ? "WHERE category = @Category AND platform = @Platform"
+            : "WHERE category = @Category";
         var games = await connection.QueryAsync<Game>(
-                $"SELECT * from games {wherePlatform} ORDER BY title LIMIT @PageSize OFFSET @Offset",
-                new { PageSize = pageSize, Offset = offset, Platform = platform }
+                $"SELECT * from games {where} ORDER BY title LIMIT @PageSize OFFSET @Offset",
+                new { PageSize = pageSize, Offset = offset, Platform = platform, Category = GameCategory.MainGame }
                 );
 
         var totalCount = await connection.ExecuteScalarAsync<int>(
-            $"SELECT COUNT(*) FROM games {wherePlatform}",
-            new { Platform = platform }
+            $"SELECT COUNT(*) FROM games {where}",
+            new { Platform = platform, Category = GameCategory.MainGame }
             );
 
         return Ok(new PaginatedResponse<Game>
@@ -69,7 +71,8 @@ public class GamesController : ControllerBase
     {
         using var connection = _dbFactory.CreateConnection();
         var platforms = await connection.QueryAsync<dynamic>(
-            "SELECT platform, COUNT(*) as game_count FROM games GROUP BY platform ORDER BY platform"
+            "SELECT platform, COUNT(*) as game_count FROM games WHERE category = @Category GROUP BY platform ORDER BY platform",
+            new { Category = GameCategory.MainGame }
         );
         return Ok(platforms);
     }
@@ -86,13 +89,13 @@ public class GamesController : ControllerBase
 
         using var connection = _dbFactory.CreateConnection();
         var games = await connection.QueryAsync<Game>(
-            "SELECT * FROM games WHERE similarity(title, @Search) > 0.3 ORDER BY similarity(title, @Search) DESC LIMIT @PageSize OFFSET @Offset",
-            new { Search = q, PageSize = pageSize, Offset = offset }
+            "SELECT * FROM games WHERE similarity(title, @Search) > 0.3 AND category = @Category ORDER BY similarity(title, @Search) DESC LIMIT @PageSize OFFSET @Offset",
+            new { Search = q, PageSize = pageSize, Offset = offset, Category = GameCategory.MainGame }
         );
 
         var totalCount = await connection.ExecuteScalarAsync<int>(
-            "SELECT COUNT(*) FROM games WHERE similarity(title, @Search) > 0.3",
-            new { Search = q}
+            "SELECT COUNT(*) FROM games WHERE similarity(title, @Search) > 0.3 AND category = @Category",
+            new { Search = q, Category = GameCategory.MainGame }
         );
 
         return Ok(new PaginatedResponse<Game>

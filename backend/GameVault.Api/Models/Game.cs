@@ -25,4 +25,7 @@ public class Game
     public string? Description { get; set; }
     public string? CoverArtUrl { get; set; }
     public string Region { get; set; } = string.Empty;
+    public int Category { get; set; }
+    public int? IgdbId { get; set; }
+    public int? ParentGameIgdbId { get; set; }
 }

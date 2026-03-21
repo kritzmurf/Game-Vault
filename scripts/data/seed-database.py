@@ -67,20 +67,26 @@ def main():
         for game in games:
             cursor.execute(
                 """ INSERT INTO games 
-                        (title, platform, release_date, publisher, developer, description, cover_art_url, region)
+                        (title, platform, release_date, publisher, developer, description, cover_art_url, region,
+                         category, igdb_id, parent_game_igdb_id)
                     VALUES 
-                        (%s, %s, %s, %s, %s, %s, %s, %s)
+                        (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                     ON CONFLICT (title, platform) DO UPDATE SET
                         release_date = EXCLUDED.release_date,
                         publisher = EXCLUDED.publisher,
                         developer = EXCLUDED.developer,
                         description = EXCLUDED.description,
                         cover_art_url = EXCLUDED.cover_art_url,
-                        region = EXCLUDED.region
+                        region = EXCLUDED.region,
+                        category = EXCLUDED.category,
+                        igdb_id = EXCLUDED.igdb_id,
+                        parent_game_igdb_id = EXCLUDED.parent_game_igdb_id
+
                 """,
                 (game.get("title"), game.get("platform"), game.get("releaseDate"),
                  game.get("publisher"), game.get("developer"), game.get("description"),
-                 game.get("coverArtUrl"), game.get("region")
+                 game.get("coverArtUrl"), game.get("region"),
+                 game.get("category", 0), game.get("igdbId"), game.get("parentGameIgdbId")
                 )
             )
         total_processed += len(games)

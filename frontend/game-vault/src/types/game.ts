@@ -10,6 +10,10 @@ export interface Game {
     description: string | null
     coverArtUrl: string | null
     region: string
+    category: number
+    igdbId: number | null
+    parentGameIgdbId: number | null
+    
 }
 
 export interface PaginatedResponse<T> {
