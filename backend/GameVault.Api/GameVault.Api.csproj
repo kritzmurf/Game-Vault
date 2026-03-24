@@ -10,6 +10,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations/*.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="GameVault.Api.Tests" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.66" />
