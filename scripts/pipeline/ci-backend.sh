@@ -8,10 +8,10 @@ BACKEND="$PROJECT_ROOT/backend/GameVault.Api"
 BACKEND_TESTS="$PROJECT_ROOT/backend/GameVault.Api.Tests"
 
 echo "=== Restoring Backend Dependencies ==="
-dotnet restore $BACKEND
+dotnet restore $BACKEND_TESTS
 
 echo "=== Building Backend ==="
-dotnet build $BACKEND --no-restore
+dotnet build $BACKEND_TESTS --no-restore
 
 echo "=== Running tests ==="
 dotnet test $BACKEND_TESTS --no-build
